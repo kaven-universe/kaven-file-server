@@ -8,9 +8,9 @@
     "SSL_KEY_PATH": "",
     "SSL_CERT_PATH": "",
 
-    "ENABLE_LOG": false,
-    "LOG_FILE_PATH": "",
-    "ANSI_LOG_FILE_PATH": "",
+    "ENABLE_LOG": true,
+    "LOG_FILE_PATH": "./logs/logs.txt",
+    "ANSI_LOG_FILE_PATH": "./logs/ansi_logs.txt",
 
     "ENABLE_AUTHENTICATION": true,
     "AUTH_USER": "Kaven",

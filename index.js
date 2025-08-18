@@ -4,17 +4,19 @@
  * @website:     http://blog.kaven.xyz
  * @file:        [kaven-file-server] /index.js
  * @create:      2021-11-18 15:55:12.122
- * @modify:      2023-11-30 14:34:19.510
+ * @modify:      2025-08-18 12:28:32.754
  * @version:     1.0.8
- * @times:       36
- * @lines:       50
- * @copyright:   Copyright © 2021-2023 Kaven. All Rights Reserved.
+ * @times:       37
+ * @lines:       53
+ * @copyright:   Copyright © 2021-2025 Kaven. All Rights Reserved.
  * @description: [description]
  * @license:     [license]
  ********************************************************************/
 
 import express from "express";
 import { CreateExpress404Handler, CreateExpressAuthentication, CreateExpressLogger, KavenAuthorizationRecords, KavenDigestAuthentication, StartServer } from "kaven-utils";
+import { join } from "node:path";
+import favicon from "serve-favicon";
 import Config from "./config.js";
 import { KavenFileServer, KavenFileServerOptions } from "./server.js";
 
@@ -23,6 +25,7 @@ const app = express();
 app.set("trust proxy", "loopback, linklocal, uniquelocal");
 
 app.use(CreateExpressLogger());
+app.use(favicon(join(Config.RootDir, "favicon.ico")));
 
 const options = KavenFileServerOptions();
 options.fieldFile = Config.FORM_DATA_FIELD_FILE;

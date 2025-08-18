@@ -4,22 +4,24 @@
  * @website:     http://blog.kaven.xyz
  * @file:        [kaven-file-server] /config.js
  * @create:      2021-11-23 17:30:37.304
- * @modify:      2023-11-30 14:28:44.575
+ * @modify:      2025-08-18 11:14:22.638
  * @version:     1.0.8
- * @times:       19
- * @lines:       61
- * @copyright:   Copyright © 2021-2023 Kaven. All Rights Reserved.
+ * @times:       21
+ * @lines:       53
+ * @copyright:   Copyright © 2021-2025 Kaven. All Rights Reserved.
  * @description: [description]
  * @license:     [license]
  ********************************************************************/
 
-import { LogLevel, Strings_Development } from "kaven-basic";
-import { AppendPathToDirectory, KavenLogger, LoadJsonConfig } from "kaven-utils";
+import { ConsoleLogger, Logger, Strings_Development } from "kaven-basic";
+import { AppendPathToDirectory, EnableInternalLogger, FileLogger, LoadJsonConfig, StdLogger } from "kaven-utils";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+EnableInternalLogger();
 
 /**
  * @type { import("./global").AppConfig }
@@ -38,23 +40,13 @@ const Config = {
     IsDevelopment: config.NODE_ENV === Strings_Development,
 };
 
-if (!Config.IsDevelopment && Config.ENABLE_LOG) {
-    KavenLogger.Default = new KavenLogger({
-        files: [
-            {
-                file: Config.LOG_FILE_PATH,
-                levels: [LogLevel.Info, LogLevel.Warn, LogLevel.Error],
-                saveWithAnsiColor: false,
-            },
-            {
-                file: Config.ANSI_LOG_FILE_PATH,
-                levels: [LogLevel.Info, LogLevel.Warn, LogLevel.Error],
-                saveWithAnsiColor: true,
-            },
-        ],
-    });
+if (Config.IsDevelopment) {
+    Logger.Handlers.add(new ConsoleLogger());
+} else if (Config.ENABLE_LOG) {
+    Logger.Handlers.add(new StdLogger());
 
-    KavenLogger.Default.Start();
+    Logger.Handlers.add(FileLogger.StartNew(Config.LOG_FILE_PATH, { StripAnsi: true }));
+    Logger.Handlers.add(FileLogger.StartNew(Config.ANSI_LOG_FILE_PATH));
 }
 
 export default Config;

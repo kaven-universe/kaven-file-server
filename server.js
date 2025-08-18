@@ -4,18 +4,17 @@
  * @website:     http://blog.kaven.xyz
  * @file:        [kaven-file-server] /server.js
  * @create:      2021-11-18 15:22:36.251
- * @modify:      2023-11-30 14:33:26.852
+ * @modify:      2025-08-18 11:04:38.842
  * @version:     1.0.8
- * @times:       47
- * @lines:       175
- * @copyright:   Copyright © 2021-2023 Kaven. All Rights Reserved.
+ * @times:       48
+ * @lines:       174
+ * @copyright:   Copyright © 2021-2025 Kaven. All Rights Reserved.
  * @description: [description]
  * @license:     [license]
  ********************************************************************/
 
 import { Router } from "express";
-import { Distinct, FileSize, IsString } from "kaven-basic";
-import { KavenLogger } from "kaven-utils";
+import { Distinct, IsString, Logger, ToFileSize } from "kaven-basic";
 import multer, { diskStorage } from "multer";
 import { existsSync, mkdirSync } from "node:fs";
 import { isAbsolute, join, normalize } from "node:path";
@@ -86,7 +85,7 @@ export function KavenFileServer(uploadRootDir, options = KavenFileServerOptions(
 
                 if (!existsSync(saveDir)) {
                     mkdirSync(saveDir, { recursive: true });
-                    KavenLogger.Default.Info(`mkdir: ${saveDir}`);
+                    Logger.Info(`mkdir: ${saveDir}`);
                 }
 
                 map.set(file, saveDir);
@@ -135,7 +134,7 @@ export function KavenFileServer(uploadRootDir, options = KavenFileServerOptions(
     });
     const upload = options.fieldFile ? m.array(options.fieldFile) : m.any();
 
-    router.get("/", (req, res) => {
+    router.get("/", (_req, res) => {
         res.send("<a href='https://github.com/Kaven-Universe/kaven-file-server'>Kaven File Server</a>");
     });
 
@@ -147,25 +146,25 @@ export function KavenFileServer(uploadRootDir, options = KavenFileServerOptions(
         upload(req, res, async function(err) {
             try {
                 if (err) {
-                    KavenLogger.Default.Error(err);
+                    Logger.Error(err);
 
                     // An error occurred when uploading
                     return res.status(400).send(err.message);
                 }
 
                 for (const file of req.files) {
-                    let log = `file uploaded: ${file.path}, ${FileSize(file.size)}`;
+                    let log = `file uploaded: ${file.path}, ${ToFileSize(file.size)}`;
                     if (file.originalname !== file.filename) {
                         log += `, originalname: ${file.originalname}`;
                     }
 
-                    KavenLogger.Default.Info(log);
+                    Logger.Info(log);
                 }
 
                 // Everything went fine
                 return res.sendStatus(200);
             } catch (ex) {
-                KavenLogger.Default.Error(ex);
+                Logger.Error(ex);
                 return res.sendStatus(400);
             }
         });
