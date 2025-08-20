@@ -1,8 +1,6 @@
 {
     "NODE_ENV": "production",
-    
     "PORT": 80,
-    "UPLOAD_ROOT": "uploads",
 
     "ENABLE_HTTPS": false,
     "SSL_KEY_PATH": "",
@@ -12,13 +10,20 @@
     "LOG_FILE_PATH": "./logs/logs.txt",
     "ANSI_LOG_FILE_PATH": "./logs/ansi_logs.txt",
 
-    "ENABLE_AUTHENTICATION": true,
-    "AUTH_USER": "Kaven",
-    "AUTH_PASS": "kaven@wuwenkai.com",
+    "Servers": [
+        {
+            "PATH": "/file",
+            "UPLOAD_ROOT": "./uploads",
 
-    "ALLOW_UPLOAD_TO_SUB_DIR": true,
-    "ALLOW_OVERRIDE_EXISTING_FILE": false,
+            "ENABLE_AUTHENTICATION": true,
+            "AUTH_USER": "Kaven",
+            "AUTH_PASS": "kaven@wuwenkai.com",
 
-    "FORM_DATA_FIELD_FILE": "",
-    "FORM_DATA_FIELD_DIR": "dir"
+            "ALLOW_UPLOAD_TO_SUB_DIR": true,
+            "ALLOW_OVERRIDE_EXISTING_FILE": false,
+
+            "FORM_DATA_FIELD_FILE": "",
+            "FORM_DATA_FIELD_DIR": "dir"
+        }
+    ]
 }

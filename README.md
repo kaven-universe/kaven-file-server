@@ -1,4 +1,4 @@
-# kaven-file-server
+# [kaven-file-server](https://github.com/kaven-universe/kaven-file-server)
 
 A simple http(s) server for file upload.
 

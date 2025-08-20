@@ -4,10 +4,10 @@
  * @website:     http://blog.kaven.xyz
  * @file:        [kaven-file-server] /server.js
  * @create:      2021-11-18 15:22:36.251
- * @modify:      2025-08-18 11:04:38.842
- * @version:     1.0.8
- * @times:       48
- * @lines:       174
+ * @modify:      2025-08-20 23:01:17.944
+ * @version:     1.1.1
+ * @times:       52
+ * @lines:       187
  * @copyright:   Copyright © 2021-2025 Kaven. All Rights Reserved.
  * @description: [description]
  * @license:     [license]
@@ -15,30 +15,44 @@
 
 import { Router } from "express";
 import { Distinct, IsString, Logger, ToFileSize } from "kaven-basic";
+import { AppendPathToDirectory, CreateExpressAuthentication, KavenAuthorizationRecords, KavenDigestAuthentication } from "kaven-utils";
 import multer, { diskStorage } from "multer";
 import { existsSync, mkdirSync } from "node:fs";
 import { isAbsolute, join, normalize } from "node:path";
-
-export function KavenFileServerOptions() {
-    return {
-        fieldFile: "file",
-        fieldDir: "dir",
-        allowUploadToSubDir: true,
-        allowOverrideExistingFile: true,        
-    };
-}
+import Config from "./config.js";
 
 /**
  * 
- * @param {string} uploadRootDir 
+ * @param { import("./global").Server } server 
+ * @returns 
  */
-export function KavenFileServer(uploadRootDir, options = KavenFileServerOptions()) {
+export function KavenFileServer(server) {
 
-    if (!uploadRootDir) {
+    const form_data_field_file = server.FORM_DATA_FIELD_FILE;
+    const form_data_field_dir = server.FORM_DATA_FIELD_DIR;
+    const allow_upload_to_sub_dir = server.ALLOW_UPLOAD_TO_SUB_DIR;
+    const allow_override_existing_file = server.ALLOW_OVERRIDE_EXISTING_FILE;
+
+    const upload_root_dir = AppendPathToDirectory(Config.RootDir, server.UPLOAD_ROOT);
+
+    if (!upload_root_dir) {
         throw new Error("dir is required.");
     }
 
-    const router = Router();
+    /**
+     * @type { import("express").RequestHandler }
+     */
+    let authHandler = undefined;
+
+    if (server.ENABLE_AUTHENTICATION) {
+        const authentication = new KavenDigestAuthentication(server.AUTH_USER, server.AUTH_PASS);
+        authentication.Records = new KavenAuthorizationRecords();
+
+        const { handler } = CreateExpressAuthentication(authentication);
+        authHandler = handler;
+    }
+
+    Logger.Info(`Initialize Server: ${upload_root_dir}, auth: ${server.ENABLE_AUTHENTICATION}`);
 
     const tryGetField = (from, name) => {
         if (!from || !name) {
@@ -73,13 +87,13 @@ export function KavenFileServer(uploadRootDir, options = KavenFileServerOptions(
     const storage = diskStorage({
         destination: function(req, file, cb) {
             try {
-                let saveDir = uploadRootDir;
+                let saveDir = upload_root_dir;
 
-                if (options.allowUploadToSubDir) {
+                if (allow_upload_to_sub_dir) {
                     const fieldName = `${file.fieldname}_dir`;
-                    const subDir = tryGetField(req.body, fieldName) || tryGetField(req.body, options.fieldDir);
+                    const subDir = tryGetField(req.body, fieldName) || tryGetField(req.body, form_data_field_dir);
                     if (subDir && !isAbsolute(subDir)) {
-                        saveDir = join(uploadRootDir, subDir);
+                        saveDir = join(upload_root_dir, subDir);
                     }
                 }
 
@@ -108,12 +122,12 @@ export function KavenFileServer(uploadRootDir, options = KavenFileServerOptions(
                 const saveDir = map.get(file);
                 const filePath = join(saveDir, saveName);
 
-                if (!normalize(filePath).startsWith(uploadRootDir)) {
+                if (!normalize(filePath).startsWith(upload_root_dir)) {
                     cb(new Error("Cannot save the file outside the root directory."));
                     return;
                 }
 
-                if (!options.allowOverrideExistingFile) {                   
+                if (!allow_override_existing_file) {
                     if (existsSync(filePath)) {
                         cb(new Error("File already exists."));
                         return;
@@ -132,17 +146,16 @@ export function KavenFileServer(uploadRootDir, options = KavenFileServerOptions(
     const m = multer({
         storage: storage,
     });
-    const upload = options.fieldFile ? m.array(options.fieldFile) : m.any();
 
-    router.get("/", (_req, res) => {
-        res.send("<a href='https://github.com/Kaven-Universe/kaven-file-server'>Kaven File Server</a>");
-    });
+    const upload = form_data_field_file ? m.array(form_data_field_file) : m.any();
 
-    if (options.authHandler) {
-        router.use(options.authHandler);
+    const router = Router();
+
+    if (authHandler) {
+        router.use(authHandler);
     }
 
-    router.post("/file", (req, res) => {
+    router.post(server.PATH, (req, res) => {
         upload(req, res, async function(err) {
             try {
                 if (err) {

@@ -4,17 +4,17 @@
  * @website:     http://blog.kaven.xyz
  * @file:        [kaven-file-server] /config.js
  * @create:      2021-11-23 17:30:37.304
- * @modify:      2025-08-18 11:14:22.638
- * @version:     1.0.8
- * @times:       21
- * @lines:       53
+ * @modify:      2025-08-20 23:06:45.105
+ * @version:     1.1.1
+ * @times:       23
+ * @lines:       51
  * @copyright:   Copyright © 2021-2025 Kaven. All Rights Reserved.
  * @description: [description]
  * @license:     [license]
  ********************************************************************/
 
 import { ConsoleLogger, Logger, Strings_Development } from "kaven-basic";
-import { AppendPathToDirectory, EnableInternalLogger, FileLogger, LoadJsonConfig, StdLogger } from "kaven-utils";
+import { EnableInternalLogger, FileLogger, LoadJsonConfig, StdLogger } from "kaven-utils";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -31,8 +31,6 @@ const config = await LoadJsonConfig(__dirname);
 if (config === undefined) {
     throw new Error("Config load failed!!!");
 }
-
-config.UPLOAD_ROOT = AppendPathToDirectory(__dirname, config.UPLOAD_ROOT);
 
 const Config = {
     ...config,
