@@ -13,7 +13,21 @@
     "Servers": [
         {
             "PATH": "/file",
-            "UPLOAD_ROOT": "./uploads",
+            "UPLOAD_ROOT": "./uploads/public",
+
+            "ENABLE_AUTHENTICATION": false,
+            "AUTH_USER": "Kaven",
+            "AUTH_PASS": "kaven@wuwenkai.com",
+
+            "ALLOW_UPLOAD_TO_SUB_DIR": true,
+            "ALLOW_OVERRIDE_EXISTING_FILE": true,
+
+            "FORM_DATA_FIELD_FILE": "",
+            "FORM_DATA_FIELD_DIR": "dir"
+        },
+        {
+            "PATH": "/private",
+            "UPLOAD_ROOT": "./uploads/private",
 
             "ENABLE_AUTHENTICATION": true,
             "AUTH_USER": "Kaven",

@@ -4,9 +4,9 @@
  * @website:     http://blog.kaven.xyz
  * @file:        [kaven-file-server] /server.js
  * @create:      2021-11-18 15:22:36.251
- * @modify:      2025-08-20 23:01:17.944
+ * @modify:      2025-08-21 16:09:06.211
  * @version:     1.1.1
- * @times:       52
+ * @times:       55
  * @lines:       187
  * @copyright:   Copyright © 2021-2025 Kaven. All Rights Reserved.
  * @description: [description]
@@ -52,7 +52,7 @@ export function KavenFileServer(server) {
         authHandler = handler;
     }
 
-    Logger.Info(`Initialize Server: ${upload_root_dir}, auth: ${server.ENABLE_AUTHENTICATION}`);
+    Logger.Info(`Initialize Server, root:${upload_root_dir}, path:${server.PATH}, auth:${server.ENABLE_AUTHENTICATION}, allowOverride:${allow_override_existing_file}`);
 
     const tryGetField = (from, name) => {
         if (!from || !name) {
@@ -129,7 +129,7 @@ export function KavenFileServer(server) {
 
                 if (!allow_override_existing_file) {
                     if (existsSync(filePath)) {
-                        cb(new Error("File already exists."));
+                        cb(new Error(`File already exists: ${saveName}`));
                         return;
                     }
                 }

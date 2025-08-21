@@ -23,9 +23,77 @@ docker run -d \
 docker run -d -it --name kaven-file-server -p 3000:80 -v ${PWD}/uploads:/app/uploads -v ${PWD}/.config.json:/app/.config.json kavenzero/kaven-file-server:latest
 ```
 
+## Config
+
+```json
+{
+    "NODE_ENV": "production",
+    "PORT": 80,
+
+    "ENABLE_HTTPS": false,
+    "SSL_KEY_PATH": "",
+    "SSL_CERT_PATH": "",
+
+    "ENABLE_LOG": true,
+    "LOG_FILE_PATH": "./logs/logs.txt",
+    "ANSI_LOG_FILE_PATH": "./logs/ansi_logs.txt",
+
+    "Servers": [
+        {
+            "PATH": "/file",
+            "UPLOAD_ROOT": "./uploads/public",
+
+            "ENABLE_AUTHENTICATION": false,
+            "AUTH_USER": "Kaven",
+            "AUTH_PASS": "kaven@wuwenkai.com",
+
+            "ALLOW_UPLOAD_TO_SUB_DIR": true,
+            "ALLOW_OVERRIDE_EXISTING_FILE": true,
+
+            "FORM_DATA_FIELD_FILE": "",
+            "FORM_DATA_FIELD_DIR": "dir"
+        },
+        {
+            "PATH": "/private",
+            "UPLOAD_ROOT": "./uploads/private",
+
+            "ENABLE_AUTHENTICATION": true,
+            "AUTH_USER": "Kaven",
+            "AUTH_PASS": "kaven@wuwenkai.com",
+
+            "ALLOW_UPLOAD_TO_SUB_DIR": true,
+            "ALLOW_OVERRIDE_EXISTING_FILE": false,
+
+            "FORM_DATA_FIELD_FILE": "",
+            "FORM_DATA_FIELD_DIR": "dir"
+        }
+    ]
+}
+```
+
 ## API
 
-POST `/file`
+POST `PATH`
+
+```sh
+POST /file
+POST /private
+...
+```
+
+### [KCmd](https://www.nuget.org/packages/KCmd)
+
+```sh
+kcmd upload ./file.txt http://127.0.0.1/file
+kcmd upload ./ http://127.0.0.1/file Destination:sub/dir -r -keep
+
+kcmd upload ./build/app-release.apk http://127.0.0.1/file dest:"My App {{Version}}.apk"
+
+kcmd upload ./file.txt http://127.0.0.1/private auth:Digest u:username p:password
+kcmd upload ./ https://my-server.com/private auth:Digest u:username p:password dns:8.8.8.8
+```
+
+### curl
 
 ```sh
 curl -F "file=@/path/to/file" http://127.0.0.1/file
