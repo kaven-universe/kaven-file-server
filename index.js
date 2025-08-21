@@ -4,9 +4,9 @@
  * @website:     http://blog.kaven.xyz
  * @file:        [kaven-file-server] /index.js
  * @create:      2021-11-18 15:55:12.122
- * @modify:      2025-08-20 22:54:47.953
- * @version:     1.1.1
- * @times:       39
+ * @modify:      2025-08-21 20:11:19.548
+ * @version:     1.2.1
+ * @times:       40
  * @lines:       46
  * @copyright:   Copyright © 2021-2025 Kaven. All Rights Reserved.
  * @description: [description]
@@ -32,7 +32,7 @@ app.get("/", (_req, res) => {
 });
 
 for (const server of Config.Servers) {
-    app.use("/", KavenFileServer(server));
+    app.use(server.PATH, KavenFileServer(server));
 }
 
 app.use(CreateExpress404Handler());

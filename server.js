@@ -4,9 +4,9 @@
  * @website:     http://blog.kaven.xyz
  * @file:        [kaven-file-server] /server.js
  * @create:      2021-11-18 15:22:36.251
- * @modify:      2025-08-21 16:09:06.211
- * @version:     1.1.1
- * @times:       55
+ * @modify:      2025-08-21 20:11:19.546
+ * @version:     1.2.1
+ * @times:       56
  * @lines:       187
  * @copyright:   Copyright © 2021-2025 Kaven. All Rights Reserved.
  * @description: [description]
@@ -155,7 +155,7 @@ export function KavenFileServer(server) {
         router.use(authHandler);
     }
 
-    router.post(server.PATH, (req, res) => {
+    router.post("/", (req, res) => {
         upload(req, res, async function(err) {
             try {
                 if (err) {
