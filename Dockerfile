@@ -20,7 +20,7 @@ COPY LICENSE ./
 LABEL name="kaven-file-server" \
     author="Kaven" \
     email="kaven@wuwenkai.com" \
-    version="1.2.0" \
+    version="1.2.1" \
     description="A simple http(s) server for file upload."
 
 EXPOSE 80
