@@ -2,6 +2,8 @@
 
 A simple http(s) server for file upload.
 
+> **Note:** Since `v1.2.2`, the default port has changed from `80` to `3014` to support running as a non-root user in Docker. The official image maps `-p 80:3014` so external access on port 80 still works.
+
 ## [Docker](https://hub.docker.com/r/kavenzero/kaven-file-server)
 
 ```sh
