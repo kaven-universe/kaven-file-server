@@ -1,6 +1,6 @@
 {
     "NODE_ENV": "production",
-    "PORT": 80,
+    "PORT": 3014,
 
     "ENABLE_HTTPS": false,
     "SSL_KEY_PATH": "",

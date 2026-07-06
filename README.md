@@ -14,13 +14,13 @@ docker rm -f temp
 docker run -d \
     -it \
     --name kaven-file-server \
-    -p 3000:80 \
+    -p 80:3014 \
     -v $(pwd)/uploads:/app/uploads \
     -v $(pwd)/.config.json:/app/.config.json \
     kavenzero/kaven-file-server:latest
 
 # Powershell
-docker run -d -it --name kaven-file-server -p 3000:80 -v ${PWD}/uploads:/app/uploads -v ${PWD}/.config.json:/app/.config.json kavenzero/kaven-file-server:latest
+docker run -d -it --name kaven-file-server -p 80:3014 -v ${PWD}/uploads:/app/uploads -v ${PWD}/.config.json:/app/.config.json kavenzero/kaven-file-server:latest
 ```
 
 ## Config
@@ -28,7 +28,7 @@ docker run -d -it --name kaven-file-server -p 3000:80 -v ${PWD}/uploads:/app/upl
 ```json
 {
     "NODE_ENV": "production",
-    "PORT": 80,
+    "PORT": 3014,
 
     "ENABLE_HTTPS": false,
     "SSL_KEY_PATH": "",

@@ -2,28 +2,29 @@
  * @author:      Kaven
  * @email:       kaven@wuwenkai.com
  * @website:     http://blog.kaven.xyz
- * @file:        [kaven-file-server] /server.js
+ * @file:        [kaven-file-server] /src/server.js
  * @create:      2021-11-18 15:22:36.251
- * @modify:      2025-08-21 20:11:19.546
- * @version:     1.2.1
- * @times:       56
- * @lines:       187
- * @copyright:   Copyright © 2021-2025 Kaven. All Rights Reserved.
+ * @modify:      2026-07-06 13:15:15.505
+ * @version:     1.2.3
+ * @times:       58
+ * @lines:       188
+ * @copyright:   Copyright © 2021-2026 Kaven. All Rights Reserved.
  * @description: [description]
  * @license:     [license]
  ********************************************************************/
 
 import { Router } from "express";
-import { Distinct, IsString, Logger, ToFileSize } from "kaven-basic";
+import { Distinct, IsString, ToFileSize } from "kaven-basic";
 import { AppendPathToDirectory, CreateExpressAuthentication, KavenAuthorizationRecords, KavenDigestAuthentication } from "kaven-utils";
 import multer, { diskStorage } from "multer";
 import { existsSync, mkdirSync } from "node:fs";
 import { isAbsolute, join, normalize } from "node:path";
 import Config from "./config.js";
+import Logger from "./logger.js";
 
 /**
  * 
- * @param { import("./global").Server } server 
+ * @param { import("../global").Server } server 
  * @returns 
  */
 export function KavenFileServer(server) {
